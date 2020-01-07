@@ -4,6 +4,8 @@ const updload = require('multer');
 
 const feedController = require('../controllers/feed');
 
+const { isAuth } = require('../middleware/auth');
+
 const router = express.Router();
 
 const fileStorage = updload.diskStorage({
@@ -28,12 +30,13 @@ const filefilter = (req, file, cb) => {
 };
 
 // GET /feed/posts
-router.get('/posts', feedController.getPosts);
+router.get('/posts', isAuth, feedController.getPosts);
 
 // POST /feed/posts
 router.post(
   '/post',
-  updload({ storage: fileStorage, fileFilter: filefilter}).single('image'),
+  isAuth,
+  updload({ storage: fileStorage, fileFilter: filefilter }).single('image'),
   [
     body('title', 'Title is required and have at least 5 chars.')
       .trim()
@@ -46,12 +49,13 @@ router.post(
 );
 
 // GET /feed/posts/123
-router.get('/post/:postId', feedController.getPost);
+router.get('/post/:postId', isAuth, feedController.getPost);
 
 // PUT /feed/post/123
 router.put(
   '/post/:postId',
-  updload({ storage: fileStorage, fileFilter: filefilter}).single('image'),
+  isAuth,
+  updload({ storage: fileStorage, fileFilter: filefilter }).single('image'),
   [
     body('title', 'Title is required and have at least 5 chars.')
       .trim()
@@ -64,9 +68,6 @@ router.put(
 );
 
 // DELETE /feed/post/123
-router.delete(
-  '/post/:postId',
-  feedController.deletePost
-);
+router.delete('/post/:postId', isAuth, feedController.deletePost);
 
 module.exports = router;
