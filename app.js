@@ -38,12 +38,13 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(keys.databaseConnectionString)
+  .connect(keys.mongoUri)
   .then(result => {
-    const server = app.listen(8080);
+    const port = process.env.PORT || 8080;
+    const server = app.listen();
 
     console.log('-----------------------');
-    console.log('Listening on port 8080');
+    console.log('Listening on port ' + port);
     console.log('-----------------------');
 
     const io = require('./socket').init(server);
