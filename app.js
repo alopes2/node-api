@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -13,8 +14,16 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'logs/access.log'),
+  { flags: 'a' }
+);
+
 app.use(helmet());
 app.use(compression());
+
+// if you remove the second argument, logs will be written to the console
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
