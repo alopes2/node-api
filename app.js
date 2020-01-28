@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const compression = require('compression');
 
 const keys = require('./config/keys');
 
@@ -13,6 +14,8 @@ const authRoutes = require('./routes/auth');
 const app = express();
 
 app.use(helmet());
+app.use(compression());
+
 app.use(bodyParser.json());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
